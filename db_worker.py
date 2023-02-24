@@ -49,26 +49,31 @@ def get_db_name():
     return db_name
 
 
-def get_user_choice(self):
-    text = "Для получения списка таблиц введите 1\n" \
-           "Для добавления таблицы введите 2\n" \
-           "Для удаления таблицы введите 3\n" \
-           "Для редактирования таблицы введите 4\n" \
-           "Для выхода из программы введите 0\n"
+def get_user_choice(worker):
+    text = "Для получения списка таблиц введите: 1\n" \
+           "     Для добавления таблицы введите: 2\n" \
+           "       Для удаления таблицы введите: 3\n" \
+           " Для редактирования таблицы введите: 4\n" \
+           "    Для выхода из программы введите: 0\n"
+    print(text)
     while True:
-        choice = int(input(text))
-        if choice not in range(0, 5) or choice == "":
-            print("Неверный ввод.")
-            continue
-        break
+        choice = input()
+        if choice.strip().isdigit() and int(choice.strip()) in range(5):
+            choice = int(choice.strip())
+            break
+        print("Неверный ввод.")
+        continue
     if choice == 1:
-        print(self.list_tables())
+        print(worker.list_tables())
     if choice == 2:
-        return self.create()
+        return worker.create()
     if choice == 3:
-        return self.delete()
+        return worker.delete()
     if choice == 4:
         pass
+    if choice == 0:
+        print("Выход.")
+        return exit(0)
 
 
 def check_name_table():
@@ -89,6 +94,7 @@ def check_name_table():
 def main():
     global DB_WORKER
     DB_WORKER = DBworker(get_db_name())
+    get_user_choice(DB_WORKER)
     pass
 
 
