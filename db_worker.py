@@ -25,7 +25,8 @@ class DBworker:
             )""")
 
     def delete(self):
-        name = input("Введите имя удаляемой таблицы:\n")
+        name = input(f"Список доступных баз {self.list_tables()}\n"
+                     f"Введите имя удаляемой таблицы:\n")
         with sql.connect(self.db_name) as connection:
             cursor = connection.cursor()
             cursor.execute(f"""DROP TABLE IF EXISTS {name}""")
@@ -50,19 +51,13 @@ def get_db_name():
 
 
 def get_user_choice(worker):
-    text = "Для получения списка таблиц введите: 1\n" \
-           "     Для добавления таблицы введите: 2\n" \
-           "       Для удаления таблицы введите: 3\n" \
-           " Для редактирования таблицы введите: 4\n" \
-           "    Для выхода из программы введите: 0\n"
+    text = "Для получения списка таблиц введите : 1\n" \
+           "Для добавления таблицы введите      : 2\n" \
+           "Для удаления таблицы введите        : 3\n" \
+           "Для редактирования таблицы введите  : 4\n" \
+           "Для выхода из программы введите     : 0\n"
     print(text)
-    while True:
-        choice = input()
-        if choice.strip().isdigit() and int(choice.strip()) in range(5):
-            choice = int(choice.strip())
-            break
-        print("Неверный ввод.")
-        continue
+    choice = num_input_check(5)
     if choice == 1:
         print(worker.list_tables())
     if choice == 2:
@@ -74,6 +69,16 @@ def get_user_choice(worker):
     if choice == 0:
         print("Выход.")
         return exit(0)
+
+
+def num_input_check(end_range_num, start_range_num=0):
+    while True:
+        choice = input()
+        if choice.strip().isdigit() and int(choice.strip()) \
+                in range(start_range_num, end_range_num):
+            return int(choice.strip())
+        print("Неверный ввод.")
+        continue
 
 
 def check_name_table():
@@ -94,8 +99,15 @@ def check_name_table():
 def main():
     global DB_WORKER
     DB_WORKER = DBworker(get_db_name())
-    get_user_choice(DB_WORKER)
-    pass
+    while True:
+        get_user_choice(DB_WORKER)
+        print("Выполнить еще операцию?\n"
+              "да: 1, нет: 2")
+        continue_choice = num_input_check(3, 1)
+        if continue_choice == 1:
+            continue
+        if continue_choice == 2:
+            exit(0)
 
 
 if __name__ == '__main__':
